@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import moment from 'moment-timezone';
 
 import {
   Button,
@@ -41,10 +42,14 @@ export const Home = () => {
       description: values.description,
       status: values.status,
       tags: selectedTags,
-      duedate: values.duedate,
+      duedate: values.date,
+      timestamp: new Date().getTime(),
+      timezone: moment.tz.guess(),
     }
 
-    const res = fetch(`${API_URl}/tasks`, {
+    console.log(data);
+
+    const res = await fetch(`${API_URl}/tasks`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -52,7 +57,8 @@ export const Home = () => {
       body: JSON.stringify(data),
     })
 
-    // console.log((await res.json()));
+    var a = await res.json();
+    console.log(a);
 
   }
 
@@ -123,11 +129,11 @@ export const Home = () => {
 
 
                 <Form.Item label="Title" name="title">
-                  <Input />
+                  <Input required={true} />
                 </Form.Item>
 
                 <Form.Item label="Description" name="description">
-                  <TextArea />
+                  <TextArea required={true} />
                 </Form.Item>
 
                 <Form.Item label="Status" name="status">

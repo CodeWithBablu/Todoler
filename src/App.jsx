@@ -15,6 +15,12 @@ const menuicon = <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 
 </svg>
 
 
+const closeicon = <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10 text-slate-300">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+</svg>;
+
+
+
 const App = () => {
 
   const [menu, setMenu] = useState(false);
@@ -76,7 +82,7 @@ const App = () => {
 
           {/* //// Hamberg Menu */}
           <div className=' relative flex lg:hidden justify-center items-center w-12 h-12 cursor-pointer rounded-md bg-slate-700/70'>
-            <span onClick={() => setMenu((prev) => !prev)}>{menuicon}</span>
+            <span className=' hover:animate-pulse ease-in-out' onClick={() => setMenu((prev) => !prev)}>{menu ? closeicon : menuicon}</span>
 
             <div className={`${menu ? 'flex' : 'hidden'} z-10 sidebar top-20 right-0 absolute flex-col items-center w-44 bg-blue-gradient cursor-pointer rounded-2xl`}>
               {
