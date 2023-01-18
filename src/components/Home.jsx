@@ -42,7 +42,7 @@ export const Home = () => {
       description: values.description,
       status: values.status,
       tags: selectedTags,
-      duedate: values.date,
+      duedate: values.duedate,
       timestamp: new Date().getTime(),
       timezone: moment.tz.guess(),
     }
@@ -145,7 +145,7 @@ export const Home = () => {
                   </Select>
                 </Form.Item>
 
-                <Form.Item label="DatePicker" name="date">
+                <Form.Item label="DatePicker" name="duedate">
                   <DatePicker
                     format="YYYY-MM-DD"
                     disabledDate={disabledDate} />

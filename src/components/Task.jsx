@@ -1,7 +1,18 @@
-import { Popconfirm, Radio, Space, Table, Tag, Typography } from 'antd';
+import { DatePicker, Form, Input, Popconfirm, Space, Table, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 
 import moment from 'moment-timezone'
+
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
+const { RangePicker } = DatePicker;
+
+const disabledDate = (day) => {
+  // Can not select days before today and today
+  return day && day < dayjs().endOf('day');
+};
+
 
 const API_URl = 'https://63bef13f585bedcb36bb42cb.mockapi.io/api/to-do';
 
@@ -23,12 +34,12 @@ const Task = () => {
 
     data = data.map((detail, index) => {
 
-      const date = moment.tz(detail.timestamp, detail.timezone).format("YYYY-MM-DD HH:SS");
+      const date = moment.tz(detail.timestamp, detail.timezone).format("YYYY-MM-DD h:mm a");
 
       return { ...detail, key: index + 1, createdAt: date };
     });
 
-    console.log(data);
+    // console.log(data);
     setRecord(data);
   }
 
@@ -39,15 +50,37 @@ const Task = () => {
 
   // Table actions
 
+  const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState('');
   const isEditing = (record) => record.key === editingKey;
 
   const edit = (data) => {
+    console.log(moment(data.duedate));
+    form.setFieldsValue({
+      title: data.title,
+      description: data.description,
+      duedate: "",
+    })
+    console.log("hello");
     setEditingKey(data.key);
   }
 
-  const save = (key) => {
+  const save = async (key) => {
+    try {
+      const row = await form.validateFields();
+      const newData = [...record];
+      const index = newData.findIndex((item) => key === item.key);
 
+      if (index > -1) {
+        const item = newData[index];
+        newData.splice(index, 1, { ...item, ...row });
+        setRecord(newData);
+        setEditingKey('');
+      }
+    }
+    catch (error) {
+      console.log("error : ", error);
+    }
   }
 
   const cancel = () => {
@@ -70,13 +103,15 @@ const Task = () => {
       title: 'Title',
       dataIndex: 'title',
       key: 'title',
-      editable: true,
+      editTable: true,
+      sorter: (a, b) => a.title.length - b.title.length,
+
     },
     {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
-      editable: true,
+      editTable: true,
     },
     {
       title: 'Status',
@@ -110,8 +145,11 @@ const Task = () => {
       title: 'Due Date',
       dataIndex: 'duedate',
       key: 'duedate',
+      align: 'center',
+      editTable: true,
+      sorter: (a, b) => moment(a.duedate ? a.duedate : new Date()) - moment(b.duedate ? b.duedate : new Date()),
       render: (duedate) => (
-        <span>{duedate != null ? moment(duedate).format("YYYY-MM-DD HH:SS") : "NA.."}</span>
+        <span>{duedate != null ? moment(duedate).format("YYYY-MM-DD") : "NA.."}</span>
       )
     },
     {
@@ -147,7 +185,7 @@ const Task = () => {
               onClick={() => {
                 edit(record)
               }}
-              className=' bg-cyan-300 py-1 px-2 rounded-lg font-bold font-poppins hover:bg-slate-300 hover:text-slate-800'
+              className=' bg-sky-500 py-1 px-2 rounded-lg text-slate-50 font-bold font-poppins hover:bg-slate-300 hover:text-slate-800'
             >
               Edit
             </a>
@@ -156,7 +194,7 @@ const Task = () => {
 
               title="Sure to delete?" onConfirm={() => handleDelete(record)}>
               <a
-                className=' bg-rose-400 py-1 px-2 rounded-lg font-bold font-poppins  hover:bg-slate-300 hover:text-slate-800'
+                className=' bg-rose-400 py-1 px-2 rounded-lg text-slate-50 font-bold font-poppins  hover:bg-slate-300 hover:text-slate-800'
               >Delete</a>
             </Popconfirm>
 
@@ -170,23 +208,86 @@ const Task = () => {
   ];
 
 
+  const mergedColumns = columns.map((col) => {
+    if (!col.editTable) {
+      return col;
+    }
+
+    return {
+      ...col,
+      onCell: (record) => ({
+        record,
+        inputType: col.dataIndex === 'duedate' ? 'duedate' : 'text',
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(record),
+      })
+    }
+  })
+
+  const EditableCell = ({ editing, dataIndex, inputType, title, record, children, ...restProps }) => {
+
+    // console.log("Record : ");
+    // console.log(record);
+
+    const inputNode = inputType == 'duedate' ?
+      (<DatePicker
+        format="YYYY-MM-DD"
+        disabledDate={disabledDate} />)
+
+      :
+
+      (<Input />);
+
+    return (
+      <td {...restProps}>
+        {
+          editing ? (
+            <Form.Item
+              style={{ margin: 0 }}
+              name={dataIndex}
+              rules={[
+                {
+                  required: true,
+                  message: `Please input ${title} field`,
+                }
+              ]}
+            >
+              {inputNode}
+            </Form.Item>
+          )
+            :
+            (children)
+
+        }
+      </td>
+    )
+  }
+
   return (
     <div>
-      <Table
-        columns={columns}
-        scroll={{
-          x: true,
-        }}
-        tableLayout='auto'
-        pagination={{
-          position: ['none', 'bottomCenter'],
-          defaultCurrent: 1,
-          pageSize: 2,
-          total: record.length,
-          showSizeChanger: true,
-        }}
-        dataSource={record}
-      />
+      <Form form={form} component={false}>
+        <Table
+          columns={mergedColumns}
+          components={{
+            body: {
+              cell: EditableCell,
+            }
+          }}
+          scroll={{
+            x: true,
+          }}
+          tableLayout='auto'
+          pagination={{
+            position: ['none', 'bottomCenter'],
+            defaultCurrent: 1,
+            pageSize: 5,
+            total: record.length,
+            showSizeChanger: true,
+          }}
+          dataSource={record}
+        />
+      </Form>
     </div>
   );
 };
