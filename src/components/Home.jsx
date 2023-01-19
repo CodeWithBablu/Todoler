@@ -27,7 +27,7 @@ const disabledDate = (day) => {
   return day && day < dayjs().endOf('day');
 };
 
-import todo from "../assets/2.gif";
+import todo from "../assets/to-do.svg";
 
 const API_URl = 'https://63bef13f585bedcb36bb42cb.mockapi.io/api/to-do';
 
@@ -42,7 +42,7 @@ export const Home = () => {
       description: values.description,
       status: values.status,
       tags: selectedTags,
-      duedate: values.duedate,
+      duedate: values.duedate ? values.duedate : "none",
       timestamp: new Date().getTime(),
       timezone: moment.tz.guess(),
     }
@@ -57,9 +57,6 @@ export const Home = () => {
       body: JSON.stringify(data),
     })
 
-    var a = await res.json();
-    console.log(a);
-
   }
 
   //// tags started ...
@@ -71,7 +68,6 @@ export const Home = () => {
     const nextSelectedTags = checked
       ? [...selectedTags, tag]
       : selectedTags.filter((t) => t !== tag);
-    console.log('You are interested in: ', nextSelectedTags);
     setSelectedTags(nextSelectedTags);
   };
 
@@ -85,9 +81,10 @@ export const Home = () => {
         <h2 className=' px-6 font-poppins font-semibold text-2xl'> Let's us get your tasks line-up 😊️ </h2>
       </div>
 
-      <div className=' flex mt-16 w-full justify-between'>
+      <div className=' flex mt-14 w-full justify-between'>
 
-        <div className=' hidden 2xl:flex h-[700px] w-[35%] items-center justify-center  bg-primary rounded-2xl'>
+        <div className=' hidden 2xl:flex flex-col h-[700px] w-[35%] items-center space-y-32 p-16 bg-primary rounded-2xl'>
+          <h2 className=' text-white text-2xl font-poppins font-bold'>Don't miss any Tasks with <span className=' text-gradient-blue font-dynapuff text-3xl'>Todo-ler</span> 😊️</h2>
           <img src={todo} className=' w-[500px]' style={{ objectFit: 'contain' }} alt="todo" />
         </div>
 
@@ -129,11 +126,11 @@ export const Home = () => {
 
 
                 <Form.Item label="Title" name="title">
-                  <Input required={true} />
+                  <Input required={true} placeholder="enter title here..." />
                 </Form.Item>
 
-                <Form.Item label="Description" name="description">
-                  <TextArea required={true} />
+                <Form.Item label="Description" name="description" >
+                  <TextArea required={true} placeholder="describe it..." />
                 </Form.Item>
 
                 <Form.Item label="Status" name="status">

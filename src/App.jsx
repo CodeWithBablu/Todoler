@@ -39,7 +39,7 @@ const App = () => {
 
     <>
 
-      <div className='flex flex-col lg:flex-row min-h-screen '>
+      <div className='flex flex-col lg:flex-row min-h-screen overflow-hidden'>
 
         <div className=' flex bg-sidebar justify-between px-4 items-center lg:justify-start lg:flex-col min-h-[80px] lg:min-h-screen lg:w-[25%] xl:w-[20%]'>
 
@@ -81,20 +81,20 @@ const App = () => {
 
 
           {/* //// Hamberg Menu */}
-          <div className=' relative flex lg:hidden justify-center items-center w-12 h-12 cursor-pointer rounded-md bg-slate-700/70'>
+          <div className=' relative flex lg:hidden justify-center items-center w-12 h-12 cursor-pointer rounded-lg bg-slate-700/70'>
             <span className=' hover:animate-pulse ease-in-out' onClick={() => setMenu((prev) => !prev)}>{menu ? closeicon : menuicon}</span>
 
             <div className={`${menu ? 'flex' : 'hidden'} z-10 sidebar top-20 right-0 absolute flex-col items-center w-44 bg-blue-gradient cursor-pointer rounded-2xl`}>
               {
                 sidebar.map((screen) => (
-                  <div key={screen.id} className={` flex items-center ease-in-out cursor-pointer w-[90%] space-x-4 rounded-2xl py-3 px-2 my-2 ${activeScreen == screen.id ? ' bg-sidebar-gradient  ' : ''
+                  <div key={screen.id} className={` flex items-center ease-in-out cursor-pointer w-[90%] space-x-3 rounded-lg py-2 px-4 my-2 ${activeScreen == screen.id ? ' bg-sidebar-gradient  ' : ''
                     }`} onClick={() => setActiveScreen(screen.id)}>
 
                     {
                       <screen.icon
                         stroke={activeScreen == screen.id ? "cyan" : "black"}
-                        width={activeScreen == screen.id ? "24" : "18"}
-                        height={activeScreen == screen.id ? "24" : "18"}
+                        width={activeScreen == screen.id ? "24" : "20"}
+                        height={activeScreen == screen.id ? "24" : "20"}
                       />}
 
                     <h2 className={`font-bold font-dynapuff ${activeScreen == screen.id ? ' text-cyan-200 text-xl' : 'text-slate-800 text-xl'
