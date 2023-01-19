@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import moment from 'moment-timezone';
-
+import { toast } from "react-hot-toast";
 import {
   Button,
   DatePicker,
@@ -33,6 +33,7 @@ const API_URl = 'https://63bef13f585bedcb36bb42cb.mockapi.io/api/to-do';
 
 export const Home = () => {
 
+  const [form] = Form.useForm();
 
   const onFinish = async (values) => {
     console.log(values);
@@ -47,8 +48,6 @@ export const Home = () => {
       timezone: moment.tz.guess(),
     }
 
-    console.log(data);
-
     const res = await fetch(`${API_URl}/tasks`, {
       method: "POST",
       headers: {
@@ -57,6 +56,20 @@ export const Home = () => {
       body: JSON.stringify(data),
     })
 
+    toast.success(`Don't worry we have this!!`, {
+      duration: 3000,
+      icon: "👏️😉️",
+      style: {
+        borderRadius: '10px',
+        background: '#1b1b19',
+        color: '#ffffff',
+        fontSize: 18,
+        fontWeight: 800,
+      },
+    });
+
+    form.resetFields();
+    setSelectedTags([]);
   }
 
   //// tags started ...
@@ -105,6 +118,8 @@ export const Home = () => {
      filter blur-xl opacity-80 animate-blob animation-delay-3000"></div>
 
               <Form
+                form={form}
+
                 className=' flex flex-col w-full p-10 bg-transparent relative '
 
                 labelCol={{

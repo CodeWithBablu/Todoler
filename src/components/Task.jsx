@@ -117,10 +117,15 @@ const Task = () => {
     setEditingKey('');
   }
 
-  const handleDelete = (data) => {
+  const handleDelete = async (data) => {
 
-    const filterData = record.filter((item) => item.id !== data.id);
-    setRecord(filterData);
+    const res = await fetch(`${API_URl}/tasks/${data.id}`, {
+      method: "DELETE",
+    })
+
+    await fetchData();
+    // const filterData = record.filter((item) => item.id !== data.id);
+    // setRecord(filterData);
   }
 
   const handleChange = (_, filter, sorter) => {
@@ -389,9 +394,8 @@ const Task = () => {
           pagination={{
             position: ['none', 'bottomCenter'],
             defaultCurrent: 1,
-            pageSize: 5,
+            pageSize: 10,
             total: record.length,
-            showSizeChanger: true,
           }}
           dataSource={filteredData && filteredData.length >= 1 ? filteredData : record}
           onChange={handleChange}
