@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 
+// Imported all the pages
 import Home from "./components/Home";
 import Task from "./components/Task";
 import Setting from "./components/Setting";
 
-
-
 import logo from "./assets/logo.svg";
 
-import { sidebar } from './config';
+import { sidebar } from './config'; // contain sidebar data
 
 const menuicon = <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-10 h-10 text-slate-300">
   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -26,13 +25,7 @@ const App = () => {
   const [menu, setMenu] = useState(false);
 
 
-  const [activeScreen, setActiveScreen] = useState(0);
-
-  // const onFormLayoutChange = ({ size }) => {
-  //   setComponentSize(size);
-  // };
-
-
+  const [activeScreen, setActiveScreen] = useState(0); // change the active screen between home,tasks,setting 
 
 
   return (
@@ -41,6 +34,8 @@ const App = () => {
 
       <div className='flex flex-col lg:flex-row min-h-screen overflow-hidden'>
 
+
+        {/* Sidebar div started... */}
         <div className=' flex bg-sidebar justify-between px-4 items-center lg:justify-start lg:flex-col min-h-[80px] lg:min-h-screen lg:w-[25%] xl:w-[20%]'>
 
           <div className=' flex items-center justify-around lg:w-full lg:mt-14'>
@@ -107,8 +102,10 @@ const App = () => {
           </div>
 
         </div>
+        {/* Sidebar div ended... */}
 
 
+        {/* change active screen based on activescreen var */}
 
         <div className='w-full lg:w-[80%]'>
           {activeScreen == 0 && <Home />}

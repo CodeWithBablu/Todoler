@@ -124,16 +124,17 @@ const Task = () => {
     })
 
     await fetchData();
-    // const filterData = record.filter((item) => item.id !== data.id);
-    // setRecord(filterData);
+
   }
 
+  // used to store sortinginfo and filterinfo
   const handleChange = (_, filter, sorter) => {
     const { order, field } = sorter;
     setFilterInfo(filter);
     setSortedInfo({ columnKey: field, order });
   }
 
+  // function to reset the table back to normal
   const reset = () => {
     setSortedInfo({});
     setSearchText('');
@@ -141,7 +142,7 @@ const Task = () => {
     fetchData();
   }
 
-
+  // handle search event
   const handleSearchText = (e) => {
     setSearchText(e.target.value);
     if (e.target.value === "") {
@@ -149,6 +150,7 @@ const Task = () => {
     }
   }
 
+  // filter content based on search text
   const globalSearch = () => {
     filteredData = record.filter((value) => {
       return (
@@ -302,7 +304,7 @@ const Task = () => {
     },
   ];
 
-
+  // Custom col to make edit possible
   const mergedColumns = columns.map((col) => {
     if (!col.editTable) {
       return col;
@@ -321,9 +323,6 @@ const Task = () => {
   })
 
   const EditableCell = ({ editing, dataIndex, inputType, title, record, children, ...restProps }) => {
-
-    // console.log("Record : ");
-    // console.log(record);
 
     const inputNode = inputType == 'duedate' ?
       (<DatePicker
@@ -379,6 +378,8 @@ const Task = () => {
         <button onClick={reset} className=' cursor-pointer bg-indigo-500 text-white font-poppins font-bold py-2 px-4 rounded-lg text-xl hover:bg-slate-400 hover:text-slate-800'>Reset</button>
       </div>
 
+
+
       <Form className='' form={form} component={false}>
         <Table
           columns={mergedColumns}
@@ -402,6 +403,9 @@ const Task = () => {
           bordered
         />
       </Form>
+
+
+
     </div>
   );
 };

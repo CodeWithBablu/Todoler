@@ -22,6 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         },
       }}
     >
+      {/*  for react-hot-toast */}
       <Toaster />
       <App />
     </ConfigProvider>
